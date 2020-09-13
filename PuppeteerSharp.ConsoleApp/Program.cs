@@ -1,8 +1,5 @@
-﻿using PuppeteerShap.Methods;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PuppeteerSharp.Methods; 
+using System; 
 
 namespace PuppeteerSharp.ConsoleApp
 {

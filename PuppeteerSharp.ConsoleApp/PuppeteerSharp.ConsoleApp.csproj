@@ -53,8 +53,8 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PuppeteerShap.Methods\PuppeteerSharp.Methods.csproj">
-      <Project>{093E05ED-DC8D-451D-96D3-7F370EB4554D}</Project>
+    <ProjectReference Include="..\PuppeteerSharp.Methods\PuppeteerSharp.Methods.csproj">
+      <Project>{0358ddb0-fb14-43fe-b245-740f06d97995}</Project>
       <Name>PuppeteerSharp.Methods</Name>
     </ProjectReference>
     <ProjectReference Include="..\PuppeteerSharp.Models\PuppeteerSharp.Models.csproj">
