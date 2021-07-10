@@ -1,4 +1,6 @@
-﻿using PuppeteerSharp.Models;
+﻿using PuppeteerSharp.Models.Results;
+using PuppeteerSharp.Models.Results.Error;
+using PuppeteerSharp.Models.Results.Success;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace PuppeteerSharp.Methods
         { 
             var browserFetcher = new BrowserFetcher(new BrowserFetcherOptions
             {
-                Path = "C:\\Chromium" //You can replace with custom path. 
+                Path = "D:\\Chromium" //You can replace with custom path. 
             }); 
 
             var revision = await browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
@@ -32,9 +34,8 @@ namespace PuppeteerSharp.Methods
             } 
         }
 
-        public static async Task<PuppeteerResponse> ConvertHtmlToPdf()
-        {
-            var response = new PuppeteerResponse();
+        public static async Task<PuppeteerResult> ConvertHtmlToPdf()
+        {             
             var page = await OpenChromiumPage();
             try
             {
@@ -48,25 +49,20 @@ namespace PuppeteerSharp.Methods
                     Directory.CreateDirectory(filePath);
 
                 await page.PdfAsync(Path.Combine(filePath, fileName));
-
-                response.Message = "Pdf Created Succesfully";
-                response.IsSuccess = true;
+                return new SuccessPuppeteerResult("Pdf Created Succesfully");                 
             }
             catch (Exception ex)
             {
-                response.Message = "Error Occured! Detail: " + ex.Message;
-                response.IsSuccess = false;
+                return new ErrorPuppeteerResult("Error Occured! Detail: " + ex.Message);                
             }
             finally
             {
                 CloseChromium(page);
-            }
-            return response;
+            } 
         }
 
-        public static async Task<PuppeteerResponse> TakeScreenShot()
-        {
-            var response = new PuppeteerResponse();
+        public static async Task<PuppeteerResult> TakeScreenShot()
+        {           
             var page = await OpenChromiumPage();
             try
             {
@@ -85,22 +81,18 @@ namespace PuppeteerSharp.Methods
                     Height = 720
                 });
 
-
                 await page.ScreenshotAsync(Path.Combine(filePath, fileName));
-
-                response.Message = "Screenshot has taken succesfully";
-                response.IsSuccess = true;
+ 
+                return new SuccessPuppeteerResult("Screenshot has taken succesfully");
             }
             catch (Exception ex)
             {
-                response.Message = "Error Occured! Detail: " + ex.Message;
-                response.IsSuccess = false;
+                return new ErrorPuppeteerResult("Error Occured! Detail: " + ex.Message);
             }
             finally
             {
                 CloseChromium(page);
-            }
-            return response;
+            } 
         }
 
         public static async Task<string> TakeHtmlContent()
@@ -110,11 +102,6 @@ namespace PuppeteerSharp.Methods
             WaitUntilNavigation[] waitUntil = new[] { WaitUntilNavigation.Networkidle0, WaitUntilNavigation.Networkidle2, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load };
             await page.GoToAsync("http://www.google.com", new NavigationOptions { WaitUntil = waitUntil });
 
-            return await page.GetContentAsync();
-        }
-
-        public static async Task<string> TakeHtmlContent(Page page)
-        {
             return await page.GetContentAsync();
         }
 
@@ -128,20 +115,26 @@ namespace PuppeteerSharp.Methods
             return await page.GetContentAsync();
         }
 
-        public static async Task<string> GetTitleOfPage()
+        public static async Task<PuppeteerDataResult<string>> GetTitleOfPage()
         {
             var page = await OpenChromiumPage();
-
-            WaitUntilNavigation[] waitUntil = new[] { WaitUntilNavigation.Networkidle0, WaitUntilNavigation.Networkidle2, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load };
-            await page.GoToAsync("https://www.google.com", new NavigationOptions { WaitUntil = waitUntil });
-
-            return await page.GetTitleAsync();
-        }
-
-        public static async Task<string> GetTitleOfPage(Page page)
-        {
-            return await page.GetTitleAsync();
-        }
+             
+            try
+            {
+                WaitUntilNavigation[] waitUntil = new[] { WaitUntilNavigation.Networkidle0, WaitUntilNavigation.Networkidle2, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load };
+                await page.GoToAsync("https://www.google.com", new NavigationOptions { WaitUntil = waitUntil });
+                var title= await page.GetTitleAsync();
+                return new SuccessPuppeteerDataResult<string>(title,"Get Title Successfully");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorPuppeteerDataResult<string>("Error Occured! Detail: " + ex.Message);
+            }
+            finally
+            {
+                CloseChromium(page);
+            }
+        }               
 
         public static async Task<Frame[]> GetAllFrames()
         {
@@ -152,9 +145,8 @@ namespace PuppeteerSharp.Methods
             return page.Frames;
         }
 
-        public static async Task<PuppeteerResponse> LoginFacebook()
-        {
-            var response = new PuppeteerResponse();
+        public static async Task<PuppeteerResult> LoginFacebook()
+        {             
             var page = await OpenChromiumPage();
 
             try
@@ -180,23 +172,17 @@ namespace PuppeteerSharp.Methods
 
                 if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
-
-                response.Message = "Pdf Created Succesfully";
-                response.IsSuccess = true;
-
-                await page.PdfAsync(Path.Combine(filePath, fileName));
+                return new SuccessPuppeteerResult("Pdf Created Succesfully");
             }
-
             catch (Exception ex)
             {
-                response.Message = "Error Occured! Detail: " + ex.Message;
-                response.IsSuccess = false;
-            }
+                return new ErrorPuppeteerResult("Error Occured! Detail: " + ex.Message);
+            } 
             finally
             {
                 CloseChromium(page);
             }
-            return response;
+           
         }
     }
 }

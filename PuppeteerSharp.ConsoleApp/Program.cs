@@ -7,11 +7,11 @@ namespace PuppeteerSharp.ConsoleApp
     {
         public static async System.Threading.Tasks.Task Main(string[] args)
         {
-            var response= await PuppeteerMethods.LoginFacebook();            
+            var response= await PuppeteerMethods.GetTitleOfPage();            
       
-            if (response.IsSuccess)
+            if (response.Success && !string.IsNullOrEmpty(response.Data))
             {
-                Console.WriteLine(response.Message);
+                Console.WriteLine(response.Data);
             }
             else
             {
