@@ -155,7 +155,7 @@ namespace PuppeteerSharp.Methods
             }
         }
 
-        public static async Task<PuppeteerResult> LoginFacebook()
+        public static async Task<PuppeteerResult> LoginFacebook(string username, string password)
         {
             using (var page = await OpenChromiumPage())
             {
@@ -167,8 +167,8 @@ namespace PuppeteerSharp.Methods
                     await page.WaitForSelectorAsync("input#email");
 
                     //You must change your facebook login informations.
-                    await page.TypeAsync("input#email", "Your Mail");
-                    await page.TypeAsync("input#pass", "Your Password");
+                    await page.TypeAsync("input#email", username);
+                    await page.TypeAsync("input#pass", password);
                     await page.ClickAsync("button[name='login']");
                     await page.WaitForNavigationAsync();
 
@@ -182,6 +182,9 @@ namespace PuppeteerSharp.Methods
                     if (!Directory.Exists(filePath))
                         Directory.CreateDirectory(filePath);
 
+                    await page.PdfAsync(Path.Combine(filePath, fileName));
+
+
                     return new SuccessPuppeteerResult("Pdf Created Succesfully");
                 }
                 catch (Exception ex)
@@ -194,7 +197,7 @@ namespace PuppeteerSharp.Methods
                 }
             }
         }
-                
+
         public static async Task<List<string>> VideoLinkList(Page page)
         {
             WaitUntilNavigation[] waitUntil = new[] { WaitUntilNavigation.Networkidle0, WaitUntilNavigation.Networkidle2, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load };            
@@ -245,7 +248,7 @@ namespace PuppeteerSharp.Methods
                 await SearchOnGoogle(searchWord, page);
 
                 //Click Video Tab
-                var videoTabElement = @"document.getElementsByClassName('hdtb-mitem')[1].getElementsByTagName('a')[0].href";
+                var videoTabElement = @"document.getElementsByClassName('hdtb-mitem')[4].getElementsByTagName('a')[0].href";
                 var videoTabLink = await page.EvaluateExpressionAsync<string>(videoTabElement);                
                 await page.GoToAsync(videoTabLink, new NavigationOptions { WaitUntil = waitUntil });
                                 

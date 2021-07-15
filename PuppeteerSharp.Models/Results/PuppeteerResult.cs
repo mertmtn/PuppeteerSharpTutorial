@@ -7,7 +7,7 @@
             Success = success;
         }
 
-        //this kendini kastediyor. Result sınıfı
+        
         public PuppeteerResult(bool success, string message) : this(success)
         {
             Message = message;
